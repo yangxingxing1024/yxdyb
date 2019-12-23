@@ -6,6 +6,7 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
     <script src="../static/vue.js"></script>
     <link href="..\static\bootstrap.css" rel="stylesheet"/>
+    <script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
 </head>
 <body>
 <div id="app">
@@ -23,8 +24,6 @@
             </label>
             <!-- 在vue中使用事件绑定机制,如果加了小括号就可以给函数传参了 -->
             <input type="button" value="添加" class="btn btn-primary" @click="add">
-
-            </label>
             <label for="">搜索名称关键字:
                 <input type="text" class="form-control" v-model="keywords">
             </label>
@@ -42,10 +41,10 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="item in search(keywords)" :key="item.id">
+        <tr v-for="item in list" :key="item.id">
             <td>{{ item.id }}</td>
-            <td>{{ item.name }}</td>
-            <td>{{ item.ctime | dateFormat}}</td>
+            <td>{{ item.username }}</td>
+            <td>{{ item.password }}</td>
             <td><a href="" @click.prevent="del(item.id)"> 删除</a></td>
         </tr>
         </tbody>
@@ -54,6 +53,7 @@
 </div>
 
 <script>
+
     // 过滤器的定义语法 全局的过滤器(就是所有的vm实例都共享的),进行时间的格式化
     //g过滤器的第一个参数已经被规定死了,永远是过滤器管道传递过来的数据
     Vue.filter('dateFormat',function(dateStr){
@@ -67,10 +67,16 @@
     var vm = new Vue({
         el: '#app',
         data: {
-            list:[{id:1,name:'奔驰',ctime:new Date()},{id:2,name:'宝马',ctime:new Date()}],
+            list:'' ,
             id:'',
             name:'',
             keywords:''
+        },
+        created:function(){
+            this.$http.get('/findUsers').then(result => {
+                var result = result.body;
+                this.list = result;
+            });
         },
         methods: {
             add(){
@@ -92,24 +98,8 @@
                 }
             })
                 this.list.splice(index,1)
-            },
-            search(keywords){
-                // var newList=[]
-                // this.list.forEach((item,i)=>{
-                //     if(item.name.indexOf(keywords) != -1){
-                //         newList.push(item)
-                //     }
-                // })
-                // return newList
-                var newList=this.list.filter(item=>{
-                    if(item.name.includes(keywords)){
-                    return item
-                }
-            })
-                return newList
             }
-        },
-        filter:{}
+        }
     });
 
     </script>

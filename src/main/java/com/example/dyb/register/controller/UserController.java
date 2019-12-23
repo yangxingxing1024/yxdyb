@@ -1,9 +1,13 @@
 package com.example.dyb.register.controller;
 
+import com.example.dyb.register.entity.User;
 import com.example.dyb.register.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -13,6 +17,12 @@ public class UserController {
     @RequestMapping("/hello")
     public String hello(){
         return "index";
+    }
+
+    @ResponseBody
+    @RequestMapping("/findUsers")
+    public List<User> findUser(){
+        return userService.findUser();
     }
 
 }
