@@ -6,4 +6,8 @@ import java.util.List;
 
 public interface UserService {
     List<User> findUser();
+
+    void deleteUser(User user);
+
+    void addUser(User user);
 }

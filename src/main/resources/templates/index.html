@@ -36,7 +36,7 @@
         <tr>
             <th>Id</th>
             <th>Name</th>
-            <th>Ctime</th>
+            <th>Password</th>
             <th>Operation</th>
         </tr>
         </thead>
@@ -53,6 +53,8 @@
 </div>
 
 <script>
+    Vue.http.options.root = 'http://localhost:8080/';
+    Vue.http.options.emulateJSON = true;
 
     // 过滤器的定义语法 全局的过滤器(就是所有的vm实例都共享的),进行时间的格式化
     //g过滤器的第一个参数已经被规定死了,永远是过滤器管道传递过来的数据
@@ -73,31 +75,27 @@
             keywords:''
         },
         created:function(){
-            this.$http.get('/findUsers').then(result => {
-                var result = result.body;
-                this.list = result;
-            });
+          this.getAllList();
         },
         methods: {
             add(){
-                var car={id:this.id,name:this.name,ctime:new Date()}
-                this.list.push(car)
-                this.id=this.name=''
+                this.$http.post('addUser',{username:this.name}, {emulateJSON:true}).then(result => {
+                    var result = result.body
+                    this.getAllList();
+                    this.name = '';
+                })
+            },
+            getAllList(){
+                this.$http.get('findUsers').then(result => {
+                    var result = result.body;
+                    this.list = result;
+                });
             },
             del(id){
-                // this.list.some((item,i)=>{
-                //     if(item.id == id) {
-                //         this.list.splice(i,1)
-                //         return true;
-                //     }
-                // })
+                this.$http.get('deleteUserById/'+id).then(result => {
+                    this.getAllList()
 
-                var index = this.list.findIndex(item=>{
-                    if(item.id == id){
-                    return true
-                }
-            })
-                this.list.splice(index,1)
+                })
             }
         }
     });

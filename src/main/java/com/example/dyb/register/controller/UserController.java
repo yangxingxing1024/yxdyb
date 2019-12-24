@@ -25,4 +25,17 @@ public class UserController {
         return userService.findUser();
     }
 
+    @RequestMapping("/deleteUserById/{id}")
+    public String deleteUser(User user){
+        userService.deleteUser(user);
+        return "index";
+    }
+
+    @RequestMapping("/addUser")
+    public String addUser(User user){
+        user.setPassword("123456");
+        user.setSalt("123456");
+        userService.addUser(user);
+        return "index";
+    }
 }
